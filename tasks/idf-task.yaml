@@ -1,0 +1,18 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: build-image-from-git-source
+spec:
+  inputs:
+    resources:
+      - name: idf-source
+        type: git
+  steps:
+    - name: build
+      image: papawattu/esp-idf:latest
+      # specifying DOCKER_CONFIG is required to allow kaniko to detect docker credential
+      command:
+        - idf.py
+      args:
+        - -Cidf-source
+        - build
