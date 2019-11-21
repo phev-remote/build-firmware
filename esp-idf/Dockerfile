@@ -7,6 +7,6 @@ RUN cd esp-idf && ./install.sh
 RUN chmod +x /esp/esp-idf/export.sh
 RUN echo ". $HOME/esp/esp-idf/export.sh" >> $HOME/.bash_profile
 ENV IDF_PATH $HOME/esp-idf
-ENV PATH $IDF_PATH/tools:$HOME/.espressif/tools/xtensa-esp32-elf/esp32-2019r1-8.2.0/xtensa-esp32-elf/bin:$PATH
+ENV PATH $IDF_PATH/tools:$HOME/.espressif/tools/xtensa-esp32-elf/esp-2019r2-8.2.0/xtensa-esp32-elf/bin:$PATH:/esp/.espressif/tools/xtensa-esp32-elf/esp-2019r2-8.2.0/xtensa-esp32-elf/bin
 WORKDIR /workspace
-ENTRYPOINT [ "idf.py" ]
+CMD [ "idf.py" ]

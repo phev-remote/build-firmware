@@ -11,8 +11,6 @@ spec:
     - name: build
       image: papawattu/esp-idf:latest
       # specifying DOCKER_CONFIG is required to allow kaniko to detect docker credential
-      command:
-        - idf.py
       args:
         - -Cidf-source
         - build
