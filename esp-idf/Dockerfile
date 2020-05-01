@@ -1,5 +1,5 @@
 FROM ubuntu:latest
-RUN apt-get -y update && apt-get -y install git wget flex bison gperf python python-pip python-setuptools cmake ninja-build ccache libffi-dev libssl-dev
+RUN add-apt-repository universe && apt-get -y update && apt-get -y install git wget flex bison gperf python python-pip python-setuptools cmake ninja-build ccache libffi-dev libssl-dev
 WORKDIR /esp
 ENV HOME /esp
 RUN git clone --recursive https://github.com/espressif/esp-idf.git
