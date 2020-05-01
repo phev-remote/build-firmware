@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM debian
 RUN apt update && apt-get -y install git wget flex bison gperf python python-pip python-setuptools cmake ninja-build ccache libffi-dev libssl-dev
 WORKDIR /esp
 ENV HOME /esp
