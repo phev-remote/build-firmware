@@ -14,6 +14,6 @@ spec:
   - name: build-image
     workingDir: /workspace/source
     image: papawattu/build-firmware:latest
-    args: "."
+    args: ["."]
     securityContext:
         runAsUser: 0
