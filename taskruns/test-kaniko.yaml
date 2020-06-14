@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  name: kaniko-run
+spec:
+  serviceAccountName: buildrobot
+  taskRef:
+    name: kaniko
+  workspaces:
+    - name: workspace
+      persistentVolumeClaim:
+        claimName: pvc-nfs1
+  inputs:
+    resources:
+    - name: source
+      resourceSpec:
+        type: git
+        params:
+        - name: url
+          value: https://github.com/phev-remote/build-firmware
+    params:
+    - name: DOCKERFILE
+      value: /workspace/source/esp-idf/Dockerfile
+    - name: CONTEXT
+      value: esp-idf
+  outputs:
+    resources:
+    - name: image
+      resourceSpec:
+        type: image
+        params:
+        - name: url
+          value: papawattu/build-firmware:latest

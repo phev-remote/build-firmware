@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: pipeline-run-1
+spec:
+  pipelineRef:
+    name: main-pipeline
+  serviceAccountName: 'default'
+  workspace:
+    name: git-source
+    emptyDir: {}

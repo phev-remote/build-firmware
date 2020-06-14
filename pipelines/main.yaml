@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: main-pipeline
+spec:
+  params:
+  - name: image-registry
+    default: papawattu
+  workspaces:
+  - name: git-source
+  tasks:
+  - name: fetch-from-git
+    taskRef:
+      name: git-clone
+    params:
+    - name: url
+      value: https://github.com/phev-remote/build-firmware
+    - name: revision
+      value: master
+    workspaces:
+    - name: output
+      workspace: git-source
+    taskRef:
+      name: kaniko
+    params:
+    - name: IMAGE
+      value: $(params.image-registry)/build-firmware
+    - name: DOCKERFILE
+      value: $(workspaces.source.path)/Dockerfile
+    workspaces:
+    - name: source
+      workspace: git-source

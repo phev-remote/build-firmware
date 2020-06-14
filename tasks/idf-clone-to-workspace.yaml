@@ -1,0 +1,18 @@
+# Task to clone source repo
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: clone-source-to-workspace
+spec:
+  workspaces:
+    - name: scratchpad
+  inputs:
+    resources:
+      - name: source
+        type: git
+        targetPath: source
+  steps:
+    - name: clone-source-to-scratchpad
+      image: ubuntu
+      script: |
+        cp -avr $(inputs.resources.source.path)/ $(workspaces.scratchpad.path)/
