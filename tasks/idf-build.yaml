@@ -1,0 +1,19 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: idf-build
+spec:
+  inputs:
+    resources:
+    - name: source
+      type: git
+#  outputs:
+#    resources:
+#    - name: image
+  steps:
+  - name: build-image
+    workingDir: /workspace/source
+    image: papawattu/build-firmware:latest
+    args: "."
+    securityContext:
+        runAsUser: 0

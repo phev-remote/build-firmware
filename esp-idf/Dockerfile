@@ -6,7 +6,7 @@ WORKDIR /esp
 RUN git clone --recursive https://github.com/espressif/esp-idf.git
 WORKDIR /esp/esp-idf 
 RUN ./install.sh
-RUN echo '#!/bin/bash\n. /esp/esp-idf/export.sh >> /dev/null\nidf.py build' >> run.sh
+RUN echo '#!/bin/bash\n. /esp/esp-idf/export.sh >> /dev/null\nidf.py -C $1 build' >> run.sh
 RUN chmod +x run.sh
 WORKDIR /workspace
 ENTRYPOINT ["/esp/esp-idf/run.sh"]

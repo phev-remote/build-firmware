@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1alpha1
+kind: TaskRun
+metadata:
+  name: idf-build-run
+spec:
+  serviceAccountName: buildrobot
+  taskRef:
+    name: idf-build
+#  workspaces:
+#    - name: workspace
+#      persistentVolumeClaim:
+#        claimName: pvc-nfs1
+#      emptyDir: {}
+  inputs:
+    resources:
+    - name: source
+      resourceSpec:
+        type: git
+        params:
+        - name: url
+          value: git@github.com:phev-remote/phev-ttgo.git
