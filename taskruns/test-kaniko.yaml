@@ -8,8 +8,9 @@ spec:
     name: kaniko
   workspaces:
     - name: workspace
-      persistentVolumeClaim:
-        claimName: pvc-nfs1
+#      persistentVolumeClaim:
+#        claimName: pvc-nfs1
+      emptyDir: {}
   inputs:
     resources:
     - name: source
