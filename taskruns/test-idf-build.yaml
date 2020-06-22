@@ -1,16 +1,97 @@
 apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: idf-build
+spec:
+  params:
+    - name: sftp-host
+      type: string
+    - name: sftp-user
+      type: string
+    - name: sftp-password
+      type: string
+    - name: sftp-config-file
+      type: string
+      default: "config/clients.json"
+    - name: sftp-image-dir
+      type: string
+  inputs:
+    resources:
+    - name: source
+      type: git
+  steps:
+  - name: get-config
+    image: chartedcode/alpine-sftp-client
+    command: 
+      - "sshpass"
+      - "-p"
+      - "$(params.sftp-password)"
+      - "sftp"
+      - "-oStrictHostKeyChecking=no"
+      - "$(params.sftp-user)@$(params.sftp-host):$(params.sftp-config-file)"
+    workingDir: /workspace/source
+  - name: get-version
+    workingDir: /workspace/source
+    image: alpine/git
+    script: |
+      #!/usr/bin/env sh
+      ln -s /tekton/home/.ssh /root/.ssh
+      git pull
+      git describe > VERSION.txt
+  - name: build-image
+    workingDir: /workspace/source
+    image: papawattu/build-all-firmwares
+    imagePullPolicy: Always
+    env:
+    - name: CONFIG_FILE
+      value: clients.json
+  - name: show-images
+    workingDir: /workspace/source
+    image: alpine/git
+    script: |
+      #!/usr/bin/env sh
+      ln -s /tekton/home/.ssh /root/.ssh
+      git pull
+      git describe
+  - name: upload-images
+    image: chartedcode/alpine-sftp-client
+    workingDir: /workspace/source/
+    command:
+      - "sshpass"
+      - "-p"
+      - "$(params.sftp-password)"
+      - "scp"
+      - "-r"
+      - "-o UserKnownHostsFile=/dev/null"
+      - "-o StrictHostKeyChecking=no"
+      - "images"
+      - "$(params.sftp-user)@$(params.sftp-host):$(params.sftp-image-dir)"
+  volumes:
+  - name: config
+    configMap:
+      name: clientconfig
+---
+apiVersion: tekton.dev/v1alpha1
 kind: TaskRun
 metadata:
   name: idf-build-run
 spec:
   serviceAccountName: buildrobot
+  params:
+  - name: sftp-host
+    value: sftp.runesdata.se 
+  - name: sftp-password
+    valueFrom:
+      secretKeyRef:
+        name: sftp-password
+        key: ninja
+    value: edvin666666
+  - name: sftp-user
+    value: runesdata.se
+  - name: sftp-image-dir
+    value: /customers/f/b/6/runesdata.se/httpd.www/firmware
   taskRef:
     name: idf-build
-#  workspaces:
-#    - name: workspace
-#      persistentVolumeClaim:
-#        claimName: pvc-nfs1
-#      emptyDir: {}
   inputs:
     resources:
     - name: source
@@ -19,3 +100,5 @@ spec:
         params:
         - name: url
           value: git@github.com:phev-remote/phev-ttgo.git
+        - name: depth
+          value: '0'

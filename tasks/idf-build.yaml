@@ -11,9 +11,15 @@ spec:
 #    resources:
 #    - name: image
   steps:
-  - name: build-image
-    workingDir: /workspace/source
-    image: papawattu/build-firmware:latest
-    args: ["."]
-    securityContext:
-        runAsUser: 0
+  - name: sleep
+    image: busybox
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "sleep 36000"
+#  - name: build-image
+#    workingDir: /workspace/source
+#    image: papawattu/build-firmware:latest
+#    args: ["/workspace/source/phev-ttgo"]
+#    securityContext:
+#        runAsUser: 0
